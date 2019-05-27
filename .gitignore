@@ -53,3 +53,9 @@ secrets.yml
 \.mvn/
 
 src/main/resources/
+
+mvnw\.cmd
+
+mvnw
+
+HELP\.md
