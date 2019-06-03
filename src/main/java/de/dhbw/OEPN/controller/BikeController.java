@@ -9,8 +9,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +23,9 @@ import de.dhbw.OEPN.model.TypeRequest;
 @CrossOrigin
 public class BikeController {
 
+	@Value("${token}")
+	private String token;
+	
 	@GetMapping("/data")
 	public List<Coordinates> data() {
 
@@ -31,7 +33,7 @@ public class BikeController {
 
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(
 				"https://api.deutschebahn.com/flinkster-api-ng/v1/areas?lat=48.782595&lon=9.167320&providernetwork=3&radius=12"))
-				.header("Authorization", "Bearer bbdaf92af68a4552bb9c39c72355c42f").build();
+				.header("Authorization", "Bearer " + token).build();
 		HttpResponse<String> response = null;
 
 		try {
@@ -45,8 +47,6 @@ public class BikeController {
 		Gson gson = new Gson();
 
 		String data = response.body();
-
-		System.err.println(data);
 
 		TypeRequest typeRequest = gson.fromJson(data, TypeRequest.class);
 
