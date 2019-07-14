@@ -26,13 +26,13 @@ public class BikeController {
 	@Value("${token}")
 	private String token;
 	
-	@GetMapping("/data")
-	public List<Coordinates> data() {
+	@GetMapping("/bike")
+	public TypeRequest data() {
 
 		HttpClient client = HttpClient.newHttpClient();
 
 		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(
-				"https://api.deutschebahn.com/flinkster-api-ng/v1/areas?lat=48.782595&lon=9.167320&providernetwork=3&radius=12"))
+				"https://api.deutschebahn.com/flinkster-api-ng/v1/areas?lat=48.782595&lon=9.167320&providernetwork=2&radius=2000"))
 				.header("Authorization", "Bearer " + token).build();
 		HttpResponse<String> response = null;
 
@@ -48,18 +48,40 @@ public class BikeController {
 
 		String data = response.body();
 
+		System.out.println(data);
+		
 		TypeRequest typeRequest = gson.fromJson(data, TypeRequest.class);
 
-		return typeRequest.getItems().parallelStream().map(i -> {
-			List<Double> coo = i.getGeometry().getPosition().getCoordinates();
-			
-			Coordinates c = new Coordinates();
-			c.setLatitude(coo.get(1));
-			c.setLongitude(coo.get(0));
-			
-			return c;
-			
-		}).collect(Collectors.toList());
+		return typeRequest;
+	}
+	
+	@GetMapping("/car")
+	public TypeRequest car() {
+
+		HttpClient client = HttpClient.newHttpClient();
+
+		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(
+				"https://api.deutschebahn.com/flinkster-api-ng/v1/areas?lat=48.782595&lon=9.167320&providernetwork=1&radius=2000"))
+				.header("Authorization", "Bearer " + token).build();
+		HttpResponse<String> response = null;
+
+		try {
+			response = client.send(request, BodyHandlers.ofString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Gson gson = new Gson();
+
+		String data = response.body();
+
+		System.out.println(data);
+		
+		TypeRequest typeRequest = gson.fromJson(data, TypeRequest.class);
+
+		return typeRequest;
 	}
 
 }
