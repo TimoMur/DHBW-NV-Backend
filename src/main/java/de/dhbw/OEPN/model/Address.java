@@ -17,6 +17,17 @@ public class Address {
 	@SerializedName("district")
 	@Expose
 	private String district;
+	@SerializedName("number")
+	@Expose
+	private String number;
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
 
 	public String getStreet() {
 		return street;
